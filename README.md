@@ -4,3 +4,4 @@ First Line
 Будет игнорировать каталог и все его содержимое .terraform
 файлы заканчивающиеся на *.tfstate *.tfstate *.tfvars *.tfvars *_override.tf.json
 Содержащие в имени *.tfstate.*
+New LINE
