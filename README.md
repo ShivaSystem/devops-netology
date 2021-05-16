@@ -1,2 +1,5 @@
-# devops-netology
-## 
+# Решение "Домашнее задание к занятию "3.8. Компьютерные сети, лекция 3""
+1. Соединения будут висеть в состоянии InActConn до истечения тайм-аута ожидания соединения. Это происходит потому что http после получения данных сразу закрывает соединение.
+Инфа взята [отсюда](http://www.austintek.com/LVS/LVS-HOWTO/HOWTO/LVS-HOWTO.ipvsadm.html#ActiveConn)
+2. В качестве балансировщиков я использовал машины netology1 и netology2. Ссылки на конфиги keepalived. [netology1](https://github.com/ShivaSystem/devops-netology/blob/11e51bfe966b5c6d773f29a2b218a4ecb8923295/keepalived.conf_netology1_1VIP),[netology2](https://github.com/ShivaSystem/devops-netology/blob/11e51bfe966b5c6d773f29a2b218a4ecb8923295/keepalived.conf_netology2_1VIP)
+3. Использовал 3 ноды для балансировки с 3 VIP-ами. Конфиги [netology1](https://github.com/ShivaSystem/devops-netology/blob/11e51bfe966b5c6d773f29a2b218a4ecb8923295/keepalived.conf_netology1),[netology2](https://github.com/ShivaSystem/devops-netology/blob/11e51bfe966b5c6d773f29a2b218a4ecb8923295/keepalived.conf_netology2),[netology3](https://github.com/ShivaSystem/devops-netology/blob/11e51bfe966b5c6d773f29a2b218a4ecb8923295/keepalived.conf_netology3) 
