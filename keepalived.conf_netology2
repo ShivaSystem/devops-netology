@@ -30,6 +30,12 @@ virtual_server 172.28.128.100 80
           connect_port    80
         }
     }
+    real_server 172.28.128.60 80 {
+        weight 1
+        TCP_CHECK {
+          connect_port    80
+        }
+    }
 
 vrrp_instance RH_2 {
     state MASTER
@@ -58,6 +64,12 @@ virtual_server 172.28.128.102 80
         }
     }
     real_server 172.28.128.50 80 {
+        weight 1
+        TCP_CHECK {
+          connect_port    80
+        }
+    }
+    real_server 172.28.128.60 80 {
         weight 1
         TCP_CHECK {
           connect_port    80
@@ -96,3 +108,10 @@ virtual_server 172.28.128.103 80
           connect_port    80
         }
     }
+    real_server 172.28.128.60 80 {
+        weight 1
+        TCP_CHECK {
+          connect_port    80
+        }
+    }
+
