@@ -1,0 +1,32 @@
+vrrp_instance RH_1 {
+    state BACKUP
+    interface eth1
+    virtual_router_id 50
+    priority 99
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass passw123
+    }
+    virtual_ipaddress {
+        172.28.128.100
+    }
+}
+
+virtual_server 172.28.128.100 80
+    lb_algo rr
+    lb_kind DR
+    protocol TCP
+
+    real_server 172.28.128.30 80 {
+        weight 1
+        TCP_CHECK {
+          connect_port    80
+        }
+    }
+    real_server 172.28.128.40 80 {
+        weight 1
+        TCP_CHECK {
+          connect_port    80
+        }
+    }
