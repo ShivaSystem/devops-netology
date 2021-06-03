@@ -1,7 +1,9 @@
 # Решение домашнего задания к занятию "3.9. Элементы безопасности информационных систем"
 1. 1,2,3,4 пункты делал согласно инструкции из ДЗ
 5. устновил nginx командой:
-`sudo apt install -y nginx`
+<sudo apt install -y nginx>
+
+
 Конфиг nginx:
 ``
     server {
@@ -28,11 +30,11 @@
 ``
 Выпущенные сертификаты положил как видно из конфига в /etc/nginx/certs/
 6. После преобразовал сертификат intermediate.cert.pem в .crt командой:
-'openssl x509 -in intermediate.cert.pem -inform PEM -out intermediate.cert.pem.crt'
+<openssl x509 -in intermediate.cert.pem -inform PEM -out intermediate.cert.pem.crt>
 Затем получившийся сертификат скопировал в /usr/share/ca-certificates/intermediate.cert.pem.crt командой:
-'cp intermediate.cert.pem.crt /usr/share/ca-certificates/intermediate.cert.pem.crt'
+<cp intermediate.cert.pem.crt /usr/share/ca-certificates/intermediate.cert.pem.crt>
 Затем выполнил команду: 
-'dpkg-reconfigure ca-certificates' 
+<dpkg-reconfigure ca-certificates> 
 После проверил curl: 
     root@vault:/home/vagrant# curl -I https://test.example.com
     HTTP/2 200 
@@ -45,4 +47,5 @@
     accept-ranges: bytes
 
 7. Let's encrypt использую регулярно.
-![сеrt](https://github.com/ShivaSystem/devops-netology/blob/46c863964cadf5a7d0fdf18a43ba726a5453b13f/Screenshot_20210603_165633.png)
+
+! [сеrt](https://github.com/ShivaSystem/devops-netology/blob/46c863964cadf5a7d0fdf18a43ba726a5453b13f/Screenshot_20210603_165633.png)
