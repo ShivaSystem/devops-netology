@@ -31,20 +31,19 @@ server {
 'openssl x509 -in intermediate.cert.pem -inform PEM -out intermediate.cert.pem.crt'
 Затем получившийся сертификат скопировал в /usr/share/ca-certificates/intermediate.cert.pem.crt командой:
 'cp intermediate.cert.pem.crt /usr/share/ca-certificates/intermediate.cert.pem.crt'
-Затем выполнил команду: 
-'dpkg-reconfigure ca-certificates'
-После проверил curl:
-`` ''
-root@vault:/home/vagrant# curl -I https://test.example.com
-HTTP/2 200 
-server: nginx/1.18.0 (Ubuntu)
-date: Thu, 03 Jun 2021 09:22:23 GMT
-content-type: text/html
-content-length: 612
-last-modified: Thu, 03 Jun 2021 08:45:14 GMT
-etag: "60b8969a-264"
-accept-ranges: bytes
-`` ''
+Затем выполнил команду: \n
+'dpkg-reconfigure ca-certificates' \n
+После проверил curl: \n
+    root@vault:/home/vagrant# curl -I https://test.example.com
+    HTTP/2 200 
+    server: nginx/1.18.0 (Ubuntu)
+    date: Thu, 03 Jun 2021 09:22:23 GMT
+    content-type: text/html
+    content-length: 612
+    last-modified: Thu, 03 Jun 2021 08:45:14 GMT
+    etag: "60b8969a-264"
+    accept-ranges: bytes
+
 7. Let's encrypt использую регулярно.
 ! [сеrt]
-()
+(https://github.com/ShivaSystem/devops-netology/blob/46c863964cadf5a7d0fdf18a43ba726a5453b13f/Screenshot_20210603_165633.png)
