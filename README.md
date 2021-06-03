@@ -31,17 +31,18 @@
 
 
 Выпущенные сертификаты положил как видно из конфига в /etc/nginx/certs/
+
 6. После преобразовал сертификат intermediate.cert.pem в .crt командой:
 
-<openssl x509 -in intermediate.cert.pem -inform PEM -out intermediate.cert.pem.crt>
+'openssl x509 -in intermediate.cert.pem -inform PEM -out intermediate.cert.pem.crt'
 
 Затем получившийся сертификат скопировал в /usr/share/ca-certificates/intermediate.cert.pem.crt командой:
 
-<cp intermediate.cert.pem.crt /usr/share/ca-certificates/intermediate.cert.pem.crt>
+'cp intermediate.cert.pem.crt /usr/share/ca-certificates/intermediate.cert.pem.crt'
 
 Затем выполнил команду: 
 
-<dpkg-reconfigure ca-certificates> 
+'dpkg-reconfigure ca-certificates' 
 
 После проверил curl: 
 
