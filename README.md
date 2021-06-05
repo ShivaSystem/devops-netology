@@ -1,61 +1,73 @@
-# Решение домашнего задания к занятию "3.9. Элементы безопасности информационных систем"
-1. 1,2,3,4 пункты делал согласно инструкции из ДЗ
-5. устновил nginx командой:
-<sudo apt install -y nginx>
+# Решение домашнего задания к занятию "4.1. Командная оболочка Bash: Практические навыки"
+1. Значение $с будет 1+2, так как мы присваиваем в качестве значения этой переменной строку a+b
+   Значение $d будет также 1+2, потому что мы присваиваем этой переменной строковое значение, только вместо $a и $b подставляются уже значения данных переменных
+   Значение $e будет равно 3, потому что внутри двойных круглых скобок вычисляются арифметические выражения
 
+2. 	#!/usr/bin/env bash
+	a=1
+	while (($a!=0))
+	do
+        	ping -c 1 8.8.8.8
+        	a=$?
+        	if (($a != 0))
+       		then
+           	     date >> curl.log
+        	else break
+	      	fi
+	done
 
-Конфиг nginx:
+3. 
+      #!/bin/bash
+      ar_ip=(192.168.0.1 173.194.222.113 87.250.250.242)
 
-    
-    server {
-            listen          80;
-            listen          [::]:80;
-            server_name     test.example.com www.test.example.com;
-            return 301      https://test.example.com$request_uri;
-            return 301      https://www.test.example.com$request_uri;
-    }
+      for (( i=0; i<3; i++  ))
+      do
+          for (( z=0; z<5; z++))
+          do
+                ADDR=${ar_ip[i]}
+                ERRPATH='/var/log/ip.sh_err.log'
+                LOGPATH='/var/log/ip.sh.log'
+                NOTE="curl to http://$ADDR"
+                curl -I --connect-timeout 5 http://$ADDR
+                if (($? == 0))
+                then
+                        echo "$(date) - $NOTE : Port 80 on host $ADDR is available" >> $LOGPATH
+                else
+                        echo "$(date) - $NOTE : Port 80 on host $ADDR is not available" >> $ERRPATH
+                fi
+           done
+       done
 
-    server {
-            listen              443 ssl http2;
-            server_name         test.example.com www.test.example.com;
-            ssl_certificate     /etc/nginx/certs/test.crt;
-            ssl_certificate_key /etc/nginx/certs/test.key;
-            ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-            ssl_ciphers         HIGH:!aNULL:!MD5;
+4. 
+      #!/bin/bash
+      ar_ip=(192.168.0.1 173.194.222.113 87.250.250.242)
+      a=1
 
-            location / {
-                    root    /var/www/html;
-                    index   index.html index.htm;
-            }
-    } 
-
-
-Выпущенные сертификаты положил как видно из конфига в /etc/nginx/certs/
-
-6. После преобразовал сертификат intermediate.cert.pem в .crt командой:
-
-'openssl x509 -in intermediate.cert.pem -inform PEM -out intermediate.cert.pem.crt'
-
-Затем получившийся сертификат скопировал в /usr/share/ca-certificates/intermediate.cert.pem.crt командой:
-
-'cp intermediate.cert.pem.crt /usr/share/ca-certificates/intermediate.cert.pem.crt'
-
-Затем выполнил команду: 
-
-'dpkg-reconfigure ca-certificates' 
-
-После проверил curl: 
-
-    root@vault:/home/vagrant# curl -I https://test.example.com
-    HTTP/2 200 
-    server: nginx/1.18.0 (Ubuntu)
-    date: Thu, 03 Jun 2021 09:22:23 GMT
-    content-type: text/html
-    content-length: 612
-    last-modified: Thu, 03 Jun 2021 08:45:14 GMT
-    etag: "60b8969a-264"
-    accept-ranges: bytes
-
-7. Let's encrypt использую регулярно.
-
-![сеrt](https://github.com/ShivaSystem/devops-netology/blob/46c863964cadf5a7d0fdf18a43ba726a5453b13f/Screenshot_20210603_165633.png)
+      while (($a!=0))
+      do
+          for (( i=0; i<3; i++  ))
+          do
+          if (($a!=0))
+          then
+                for (( z=0; z<5; z++))
+                do
+                        ADDR=${ar_ip[i]}
+                        ERRPATH='/var/log/ip.sh_err.log'
+                        LOGPATH='/var/log/ip.sh.log'
+                        NOTE="curl to http://$ADDR"
+                        curl -I --connect-timeout 5 http://$ADDR
+                        a=$?
+                        if (($a == 0))
+                        then
+                                echo "$(date) - $NOTE : Port 80 on host $ADDR is available" >> $LOGPATH
+                                break
+                        else
+                                echo "$(date) - $NOTE : Port 80 on host $ADDR is not available" >> $ERRPATH
+                        fi
+                done
+          else break
+          fi
+          done
+      done
+~                                                                                                                               
+~        
