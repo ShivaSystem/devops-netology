@@ -31,26 +31,33 @@
 ## Задача 2
 * Для установки Docker использовал следующие команды:
 
-
-	$ sudo apt-get remove docker docker-engine docker.io containerd runc
-	$ sudo apt-get update
-	$ sudo apt-get install     apt-transport-https     ca-certificates     curl     gnupg     lsb-release
-	$ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-	$ echo   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-	$ sudo apt-get update
-	$ sudo apt-get install docker-ce docker-ce-cli containerd.io
+```console
+$ sudo apt-get remove docker docker-engine docker.io containerd runc
+$ sudo apt-get update
+$ sudo apt-get install     apt-transport-https     ca-certificates     curl     gnupg     lsb-release
+$ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+$ echo   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+$ sudo apt-get update
+$ sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
 
 * реализуйте функциональность: запуск веб-сервера в фоне с индекс-страницей, содержащей HTML-код ниже:
 
-	$ sudo docker pull httpd
-	$ sudo docker run -dit --name apache -p 80:80 httpd
-	$ sudo docker exec -it apache /bin/bash
-	Затем создал и отредактировал файл htdocs/index.html 
-	# docker commit -m "httpd image for Netology" -a "Vladimir Sakhnov" 0a94c845e9b8 httpd:latestnew
-	# docker tag 0a94c845e9b8 shiva2913/httpd:latestnew
-	# docker login
-	# docker push shiva2913/httpd:latestnew
-	
+```console
+$ sudo docker pull httpd
+$ sudo docker run -dit --name apache -p 80:80 httpd
+$ sudo docker exec -it apache /bin/bash
+```
+
+Затем создал и отредактировал файл htdocs/index.html 
+
+```console
+# docker commit -m "httpd image for Netology" -a "Vladimir Sakhnov" 0a94c845e9b8 httpd:latestnew
+# docker tag 0a94c845e9b8 shiva2913/httpd:latestnew
+# docker login
+# docker push shiva2913/httpd:latestnew
+```
+
 ### Ссылка на DockerHub
 https://hub.docker.com/r/shiva2913/httpd
 
@@ -58,25 +65,33 @@ https://hub.docker.com/r/shiva2913/httpd
 ## Задача 3
 
 * Запустите первый контейнер из образа centos c любым тэгом в фоновом режиме, подключив папку info из текущей рабочей директории на хостовой машине в /share/info контейнера;
-	
-	# docker pull centos
-	# docker run -dit --name CentOS1 -v /home/user/info:/share/info centos:latest 
+
+```console	
+# docker pull centos
+# docker run -dit --name CentOS1 -v /home/user/info:/share/info centos:latest 
+```
 
 * Запустите второй контейнер из образа debian:latest в фоновом режиме, подключив папку info из текущей рабочей директории на хостовой машине в /info контейнера;
 
-![Вывод "docker container ps"](./HW_5.3_Docker/docker_ps.png)
+![Вывод "docker container ps"](/HW_5.3_Docker/docker_ps.png)
 
 * Подключитесь к первому контейнеру с помощью exec и создайте текстовый файл любого содержания в /share/info ;
 
-	root@doker5:~## docker exec -it 9b5edca124dd /bin/bash
-	[root@9b5edca124dd /]# echo "First file for home work" > /share/info/first_file
+```console
+root@doker5:~## docker exec -it 9b5edca124dd /bin/bash
+[root@9b5edca124dd /]# echo "First file for home work" > /share/info/first_file
+```
 
 * Добавьте еще один файл в папку info на хостовой машине;
 
-	root@doker5:~# echo "Second file for netology" > /home/user/info/second_file
+```console
+root@doker5:~# echo "Second file for netology" > /home/user/info/second_file
+```
 
 * Подключитесь во второй контейнер и отобразите листинг и содержание файлов в /info контейнера.
 
-	root@doker5:~# docker exec -it b6b14f1ffff9 /bin/bash
+```console
+root@doker5:~# docker exec -it b6b14f1ffff9 /bin/bash
+```
 	
 ![ls](/HW_5.3_Docker/ls_info_deb.png)
