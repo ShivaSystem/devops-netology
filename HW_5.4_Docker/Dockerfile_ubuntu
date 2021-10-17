@@ -1,0 +1,11 @@
+FROM ubuntu:latest
+ADD https://pkg.jenkins.io/debian-stable/jenkins.io.key ./
+RUN apt-get update #2>/dev/null 1>/dev/null
+RUN apt-get install -y gpg gpg-agent ca-certificates && \
+    cat jenkins.io.key | apt-key add - && \
+    echo "deb https://pkg.jenkins.io/debian-stable binary/" > /etc/apt/sources.list.d/jenkins.list
+RUN apt-get update #2>/dev/null 1>/dev/null
+RUN apt-get install -y openjdk-11-jdk openjdk-11-jre jenkins
+
+CMD ["java","-jar","/usr/share/jenkins/jenkins.war"]
+
