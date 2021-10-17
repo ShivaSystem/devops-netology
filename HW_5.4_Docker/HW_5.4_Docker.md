@@ -18,8 +18,7 @@ CMD ["Hey, netology”]
 ```
 
 ## Решение
-* Написанный вами Dockerfile
-  * 
+* Написанный вами Dockerfile (https://github.com/ShivaSystem/devops-netology/blob/79084db7de66899b6154fcca06992740984553e3/HW_5.4_Docker/Dockerfile)
 ```
 FROM archlinux:latest
 RUN pacman -Syu --noconfirm ponysay
@@ -35,7 +34,7 @@ CMD ["Hey. netology!"]
 
 ## Задача 2
 * Amazoncorretto jenkins
-  * Наполнение Dockerfile
+  * Наполнение Dockerfile (https://github.com/ShivaSystem/devops-netology/blob/79084db7de66899b6154fcca06992740984553e3/HW_5.4_Docker/Dockerfile_corretto)
 
 ```
 FROM amazoncorretto 
@@ -60,7 +59,7 @@ CMD ["java","-jar","/usr/lib/jenkins/jenkins.war"]
 
 
 * ubuntu jenkins
-  * Наполнение Dockerfile
+  * Наполнение Dockerfile (https://github.com/ShivaSystem/devops-netology/blob/ef730ce7be94c6f2ce7a850df3c609337525e243/HW_5.4_Docker/Dockerfile_ubuntu)
 
 ```
 FROM ubuntu:latest
