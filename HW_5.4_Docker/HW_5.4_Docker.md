@@ -20,6 +20,13 @@ CMD ["Hey, netology”]
 ## Решение
 * Написанный вами Dockerfile
   * 
+```
+FROM archlinux:latest
+RUN pacman -Syu --noconfirm ponysay
+ENTRYPOINT ["/usr/bin/ponysay"]
+CMD ["Hey. netology!"]
+```
+
 * Скриншот вывода командной строки после запуска контейнера из вашего базового образа
   * ![Вывод после запуска контейнера](/HW_5.4_Docker/ponysay.png)
 
