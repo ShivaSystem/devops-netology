@@ -1,0 +1,11 @@
+FROM amazoncorretto
+
+ADD https://pkg.jenkins.io/redhat-stable/jenkins.repo /etc/yum.repos.d/
+RUN rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+ADD https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-14.noarch.rpm /home
+WORKDIR /home
+RUN rpm -Uvh epel-release*rpm
+RUN yum install -y daemonize jenkins
+
+CMD ["java","-jar","/usr/lib/jenkins/jenkins.war"]
