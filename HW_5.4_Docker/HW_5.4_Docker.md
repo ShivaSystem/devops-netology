@@ -55,7 +55,7 @@ CMD ["java","-jar","/usr/lib/jenkins/jenkins.war"]
   * Скриншот запущенного web-интерфейса
 ![Screenshot web](/HW_5.4_Docker/corretto-jenkins_webpage.png)
 
-  * Ссылка на DockerHub (docker pull shiva2913/corretto-jenkins:ver1)
+  * Ссылка на DockerHub (https://hub.docker.com/r/shiva2913/corretto-jenkins)
 
 
 * ubuntu jenkins
@@ -79,5 +79,26 @@ CMD ["java","-jar","/usr/share/jenkins/jenkins.war"]
   * Скриншот запущенного web-интерфейса
 ![Screenshot web](/HW_5.4_Docker/ubuntu_jenkins_webpage.png)
 
-  * Ссылка на DockerHub (docker pull shiva2913/ubuntu_jenkins:ver2)
+  * Ссылка на DockerHub (https://hub.docker.com/r/shiva2913/ubuntu_jenkins)
 
+## Задание 3
+
+* Наполнение Dokerfile с npm приложением
+```
+FROM node
+RUN apt-get update
+RUN git clone https://github.com/simplicitesoftware/nodejs-demo.git
+WORKDIR /nodejs-demo/
+RUN npm install -g nodemon
+RUN npm install -g npm@7.5.1
+RUN npm install
+RUN sed -i "s/localhost/0.0.0.0/g" app.js
+CMD ["npm","start"]
+```
+
+* Скриншот вывода вызова команды списка docker сетей (docker network cli)
+![Скриншот docker сетей](/HW_5.4_Docker/docker_networkspng.png)
+![Скриншот](/HW_5.4_Docker/docker_network.png)
+
+* Скриншот вывода curl
+![Скриншот вывода curl](/HW_5.4_Docker/curl.png)
