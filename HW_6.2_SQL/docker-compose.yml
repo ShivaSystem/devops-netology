@@ -1,0 +1,16 @@
+version: '2.0'
+services:
+    postgres:
+      image: postgres:12.8
+      container_name: postgres-netology
+      environment:
+        - POSTGRES_DB=test_db
+        - POSTGRES_USER=test-admin-user
+        - POSTGRES_PASSWORD=test-admin-user
+      volumes:
+        - postgres_data:/var/lib/posgresql/data
+        - postgres_backup:/backups
+
+volumes:
+    postgres_data:
+    postgres_backup:
