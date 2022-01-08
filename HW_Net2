@@ -1,0 +1,64 @@
+1. 36621.1 KByte
+2. network limit (MSS 1460 byte, RTT: 80.0 ms, Loss: 0.1%) : 4.62 Mbit/sec.
+   network limit (MSS 1460 byte, RTT: 80.0 ms, Loss: 1%) : 1.46 Mbit/sec.
+   4.62/1.46=3,16438356164
+3. Скорость скачивания может достигать до 9.75 МБ/с (в идеальных условиях), на практике же <= 8 МБ/с
+   Размер фрейма влияет на пропускную способность. Например если использовать фрейм минимальной длины, то скорость передачи будет ниже, а если использовать кадры максимальной длины,
+   то это приведет к повышению производительности сети (в том случае если сеть устойчива, нет потерь или искажений)
+
+4. На прикладном сначала http запрос, затем обращение к dns для разрешения netology.ru в ip адрес. 
+на транспортном первая инкапсуляция добавление заголовка транспортного уровня, установка соединения
+на сетевом проверка относится ли ip адрес домена netology.ru к нашей сети, в Source проставляется адрес хоста источника, в Destination адрес получателя, нужные флаги и т.д. и передается на 
+канальный уровень. 
+На канальном происходит запрос ARP, если ответа нет фрейм передается на MAC шлюза по умолчанию.
+
+5. 4 запроса
+/vagrant$ dig +trace A www.google.co.uk
+
+; <<>> DiG 9.16.1-Ubuntu <<>> +trace A www.google.co.uk
+;; global options: +cmd
+.                       6438    IN      NS      m.root-servers.net.
+.                       6438    IN      NS      k.root-servers.net.
+.                       6438    IN      NS      j.root-servers.net.
+.                       6438    IN      NS      f.root-servers.net.
+.                       6438    IN      NS      i.root-servers.net.
+.                       6438    IN      NS      h.root-servers.net.
+.                       6438    IN      NS      l.root-servers.net.
+.                       6438    IN      NS      b.root-servers.net.
+.                       6438    IN      NS      c.root-servers.net.
+.                       6438    IN      NS      e.root-servers.net.
+.                       6438    IN      NS      d.root-servers.net.
+.                       6438    IN      NS      g.root-servers.net.
+.                       6438    IN      NS      a.root-servers.net.
+;; Received 262 bytes from 127.0.0.53#53(127.0.0.53) in 0 ms
+
+uk.                     172800  IN      NS      nsa.nic.uk.
+uk.                     172800  IN      NS      nsb.nic.uk.
+uk.                     172800  IN      NS      nsc.nic.uk.
+uk.                     172800  IN      NS      nsd.nic.uk.
+uk.                     172800  IN      NS      dns1.nic.uk.
+uk.                     172800  IN      NS      dns2.nic.uk.
+uk.                     172800  IN      NS      dns3.nic.uk.
+uk.                     172800  IN      NS      dns4.nic.uk.
+uk.                     86400   IN      DS      43876 8 2 A107ED2AC1BD14D924173BC7E827A1153582072394F9272BA37E2353 BC659603
+uk.                     86400   IN      RRSIG   DS 8 1 86400 20210506210000 20210423200000 14631 . galGeivucWmhH4eHut0X8UEUZKe/0rw0PvwgtsqYA2tZtbP36J48h7uv 06kcllSFT4W3Uj1aFTjpLhbTZp4oIC3u8YgZfU81VNVrHw3OJA7j9LWf Q66ZrkkL/qC0c3DfnAvJ+GzHV6rK6k5/ZbDPETs2c86q490RE+p2vkfX 1xJSu+f1QvAZgoDXG7rOT+DUThCSi2uId7TqOH7nLLj1F1gVJYmZvveK IZDYb+BQxcHlEatIcKNJSeQa0jR9Lf6oRcMFWxAgOus6cu8XOVbSY24k x4zVHy+pe6Z9RNKKoMrKl3Cy+30RDWGAMauI1oO24acVNwHhC7NLdZO8 ZUUCpw==
+;; Received 800 bytes from 192.203.230.10#53(e.root-servers.net) in 44 ms
+
+google.co.uk.           172800  IN      NS      ns1.google.com.
+google.co.uk.           172800  IN      NS      ns2.google.com.
+google.co.uk.           172800  IN      NS      ns3.google.com.
+google.co.uk.           172800  IN      NS      ns4.google.com.
+G9F1KIIHM8M9VHJK7LRVETBQCEOGJIQP.co.uk. 10800 IN NSEC3 1 1 0 - G9F5O8Q1LBTUKBV4FRD3PU0HUIPAP422 NS SOA RRSIG DNSKEY NSEC3PARAM TYPE65534
+G9F1KIIHM8M9VHJK7LRVETBQCEOGJIQP.co.uk. 10800 IN RRSIG NSEC3 8 3 10800 20210526134310 20210421125741 33621 co.uk. ONUebHdSwXRP45GrEunK6VdRXocAclhHZzh8Ob7L3xJG8AUe4TP5xzgP nfHQqV0Jzzxswqiyx/vEPUVc4hiJcBdOUsFuGlZRYxxiT/DM5J7JE3wP 6Mkw2eVzQRDRhg4OvCT2Tj8hcHK6+UdtuJe0wRbsyHQ2ID1I339jLSxN Who=
+6QEK9GOTC8RL190U20RPPM84PHAACO0T.co.uk. 10800 IN NSEC3 1 1 0 - 6QF16S089GRU386I3JOL1T2E5CV61060 NS DS RRSIG
+6QEK9GOTC8RL190U20RPPM84PHAACO0T.co.uk. 10800 IN RRSIG NSEC3 8 3 10800 20210523030853 20210418021834 33621 co.uk. uZwZbVjEmI+WKB4RB3ceKHhizlJ0e6EmMZs0cJtM3eNjtAcorKSZEU+W 5OMoc7DUON4UrAgmKkIsM9TDFeB4ccc88qlC8lHK5kUco/vGC9lTQ1Vx uLCPLH7cN8S94Mq5AgwDSU+f7ta86oKdzOjLMu3kaciZFPNFSvVQqvRh XKs=
+;; Received 678 bytes from 156.154.103.3#53(nsd.nic.uk) in 80 ms
+
+www.google.co.uk.       300     IN      A       173.194.73.94
+;; Received 61 bytes from 216.239.36.10#53(ns3.google.com) in 52 ms
+
+6. /25 -> 11111111.11111111.11111111.10000000 -> (2^7)-2 = 126
+   255.248.0.0 -> 11111111.11111000.00000000.00000000 -> (2:19)-2 = 524286
+
+7. в /23 больше адресов
+8. 10.0.0.0./8 чтобы разделить на 128 подсетей нужно забрать 7 бит, получится /15 (2^7=128) ((2^17)-2=131010)

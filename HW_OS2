@@ -1,0 +1,123 @@
+1. Создал unit файл /etc/systemd/system/node_exporter.service с содержимым:
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=default.target
+
+Выполнил: sudo systemctl daemon-reload
+Добавил в автозагрузку: sudo systemctl enable node_exporter
+Сделал запуск демона: sudo systemctl start node_exporter
+Проверил статус: sudo systemctl status node_exporter
+После перезагрузки статус демона
+
+vagrant@vagrant:~$ sudo systemctl status node_exporter 
+● node_exporter.service - Node Exporter
+     Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2021-04-11 08:35:14 UTC; 4min 18s ago
+   Main PID: 674 (node_exporter)
+      Tasks: 4 (limit: 1074)
+     Memory: 12.7M
+     CGroup: /system.slice/node_exporter.service
+             └─674 /usr/local/bin/node_exporter
+
+Apr 11 08:35:14 vagrant node_exporter[674]: level=info ts=2021-04-11T08:35:14.534Z caller=node_exporter.go:113 collector=thermal_zone
+Apr 11 08:35:14 vagrant node_exporter[674]: level=info ts=2021-04-11T08:35:14.534Z caller=node_exporter.go:113 collector=time
+Apr 11 08:35:14 vagrant node_exporter[674]: level=info ts=2021-04-11T08:35:14.534Z caller=node_exporter.go:113 collector=timex
+Apr 11 08:35:14 vagrant node_exporter[674]: level=info ts=2021-04-11T08:35:14.534Z caller=node_exporter.go:113 collector=udp_queues
+Apr 11 08:35:14 vagrant node_exporter[674]: level=info ts=2021-04-11T08:35:14.534Z caller=node_exporter.go:113 collector=uname
+Apr 11 08:35:14 vagrant node_exporter[674]: level=info ts=2021-04-11T08:35:14.534Z caller=node_exporter.go:113 collector=vmstat
+Apr 11 08:35:14 vagrant node_exporter[674]: level=info ts=2021-04-11T08:35:14.534Z caller=node_exporter.go:113 collector=xfs
+Apr 11 08:35:14 vagrant node_exporter[674]: level=info ts=2021-04-11T08:35:14.534Z caller=node_exporter.go:113 collector=zfs
+Apr 11 08:35:14 vagrant node_exporter[674]: level=info ts=2021-04-11T08:35:14.534Z caller=node_exporter.go:195 msg="Listening on" address=:9100
+Apr 11 08:35:14 vagrant node_exporter[674]: level=info ts=2021-04-11T08:35:14.534Z caller=tls_config.go:191 msg="TLS is disabled." http2=false
+
+2. --collector.cpu.info
+   --collector.diskstats 
+   --collector.meminfo 
+   --collector.netstat.fields="^(.*_(InErrors|InErrs)|Ip_Forwarding|Ip(6|Ext)_(InOctets|OutOctets)|Icmp6?_(InMsgs|OutMsgs)|TcpExt_(Listen.*|Syncookies.*|TCPSynRetrans)|Tcp_(ActiveOpens|InSegs|OutSegs|OutRsts|PassiveOpens|RetransSegs|CurrEstab)|Udp6?_(InDatagrams|OutDatagrams|NoPorts|RcvbufErrors|SndbufErrors))$"
+   --collector.netdev
+   --collector.netstat
+
+4. Можно по вот этим строкам. 
+[    0.000000] DMI: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[    0.000000] Hypervisor detected: KVM
+
+5. fs.nr_open = 1048576 этот параметр задает максимальное количество открытых файловых дескрипторов.
+   -n        the maximum number of open file descriptors не позволит достичь такого числа.
+
+6. vagrant@vagrant:~$ sudo nsenter --target 1402 --pid --mount
+root@vagrant:/# ps aux
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.0   8076   592 pts/1    S+   11:43   0:00 sleep 1h
+root           2  0.2  0.4   9836  4080 pts/2    S    11:47   0:00 -bash
+root          11  0.0  0.3  11492  3304 pts/2    R+   11:47   0:00 ps aux
+
+7. :(){ :|:& };: - Это форк бомба
+   По умолчанию в сессии пользователя можно создать 2362 процесса. Об это говорит вывод:
+   vagrant@vagrant:~$ cat /sys/fs/cgroup/pids/user.slice/user-1000.slice/pids.max
+   2362
+ Чтобы изменить максимальное колличество запущенных процессов в сессии пользователя необходимо изменить файл 
+ /sys/fs/cgroup/pids/user.slice/user-1000.slice/pids.max изменив существующее значение, на то которое необходимо.
+ А если необходимо изменить в конкретной сессии, то можно отредактировать 
+ /sys/fs/cgroup/pids/user.slice/user-1000.slice/session-3.scope/pids.max
+  
+vagrant@vagrant:~$ systemd-cgls 
+Control group /:
+-.slice
+├─user.slice 
+│ └─user-1000.slice 
+│   ├─user@1000.service 
+│   │ └─init.scope 
+│   │   ├─1094 /lib/systemd/systemd --user
+│   │   └─1095 (sd-pam)
+│   └─session-3.scope 
+│     ├─1261 sshd: vagrant [priv]
+│     ├─1291 sshd: vagrant@pts/0
+│     ├─1292 -bash
+│     ├─1921 systemd-cgls
+│     └─1922 pager
+├─init.scope 
+│ └─1 /sbin/init
+└─system.slice 
+  ├─vboxadd-service.service 
+  │ └─1081 /usr/sbin/VBoxService --pidfile /var/run/vboxadd-service.sh
+  ├─systemd-networkd.service 
+  │ └─395 /lib/systemd/systemd-networkd
+  ├─systemd-udevd.service 
+  │ └─379 /lib/systemd/systemd-udevd
+  ├─cron.service 
+  │ └─698 /usr/sbin/cron -f
+  ├─polkit.service 
+  │ └─636 /usr/lib/policykit-1/polkitd --no-debug
+  ├─networkd-dispatcher.service 
+  │ └─595 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+  ├─multipathd.service 
+  │ └─511 /sbin/multipathd -d -s
+  ├─accounts-daemon.service 
+  │ └─566 /usr/lib/accountsservice/accounts-daemon
+  ├─systemd-journald.service 
+  │ └─352 /lib/systemd/systemd-journald
+  ├─atd.service 
+  │ └─701 /usr/sbin/atd -f
+  ├─winbind.service 
+  │ ├─640 /usr/sbin/winbindd --foreground --no-process-group
+  │ └─663 winbindd: domain child [VAGRANT]
+  ├─ssh.service 
+  │ └─702 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+  ├─rsyslog.service 
+  │ └─596 /usr/sbin/rsyslogd -n -iNONE
+  ├─netdata.service 
+  │ ├─ 691 /usr/sbin/netdata -D
+  │ ├─ 753 /usr/lib/netdata/plugins.d/nfacct.plugin 1
+  │ ├─ 754 /usr/lib/netdata/plugins.d/apps.plugin 1
+  │ └─1716 bash /usr/lib/netdata/plugins.d/tc-qos-helper.sh 1
+  ├─rpcbind.service
+ По выводу, если я правильно понимаю по умолчанию настроена группа /, в которой существует 2 подгруппы user.slice и system.slice

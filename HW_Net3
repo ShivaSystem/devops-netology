@@ -1,0 +1,71 @@
+1. Соединения будут висеть в состоянии InActConn до истечения тайм-аута ожидания соединения. Это происходит потому что http после получения данных сразу закрывает соединение.
+Инфа взята отсюда: http://www.austintek.com/LVS/LVS-HOWTO/HOWTO/LVS-HOWTO.ipvsadm.html#ActiveConn
+Также соединения могут висеть в этом состоянии из-за неправильной настройки.
+2.keepalived.conf MASTER 
+vrrp_instance RH_1 {
+    state MASTER
+    interface eth1
+    virtual_router_id 50
+    priority 100
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass passw123
+    }
+    virtual_ipaddress {
+        172.28.128.100
+    }
+}
+
+virtual_server 172.28.128.100 80
+    lb_algo rr
+    lb_kind DR
+    protocol TCP
+
+    real_server 172.28.128.30 80 {
+        weight 1
+        TCP_CHECK {
+          connect_port    80
+        }
+    }
+    real_server 172.28.128.40 80 {
+        weight 1
+        TCP_CHECK {
+          connect_port    80
+        }
+    }
+keepalived.conf BACKUP
+vrrp_instance RH_1 {
+    state BACKUP
+    interface eth1
+    virtual_router_id 50
+    priority 99
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass passw123
+    }
+    virtual_ipaddress {
+        172.28.128.100
+    }
+}
+
+virtual_server 172.28.128.100 80
+    lb_algo rr
+    lb_kind DR
+    protocol TCP
+
+    real_server 172.28.128.30 80 {
+        weight 1
+        TCP_CHECK {
+          connect_port    80
+        }
+    }
+    real_server 172.28.128.40 80 {
+        weight 1
+        TCP_CHECK {
+          connect_port    80
+        }
+    }
+
+3. Думаю что стоит использовать 3 VIP-a. Конфиги также в репе

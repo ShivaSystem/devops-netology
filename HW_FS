@@ -1,0 +1,158 @@
+2. Жесткие ссылки не могут иметь разные права доступа и разных владельцев, потому что это один и тот же файл только имеющий несколько имен в файловой системе.
+
+3. vagrant@vagrant:~$ sudo fdisk -l
+Disk /dev/sda: 64 GiB, 68719476736 bytes, 134217728 sectors
+Disk model: VBOX HARDDISK   
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x79a7706f
+
+Device     Boot   Start       End   Sectors  Size Id Type
+/dev/sda1  *       2048   1050623   1048576  512M  b W95 FAT32
+/dev/sda2       1052670 134215679 133163010 63.5G  5 Extended
+/dev/sda5       1052672 134215679 133163008 63.5G 8e Linux LVM
+
+
+Disk /dev/sdb: 2.51 GiB, 2684354560 bytes, 5242880 sectors
+Disk model: VBOX HARDDISK   
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sdc: 2.51 GiB, 2684354560 bytes, 5242880 sectors
+Disk model: VBOX HARDDISK   
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vgvagrant-root: 62.55 GiB, 67150807040 bytes, 131153920 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vgvagrant-swap_1: 980 MiB, 1027604480 bytes, 2007040 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+4. Disk /dev/sdb: 2.51 GiB, 2684354560 bytes, 5242880 sectors
+Disk model: VBOX HARDDISK   
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0xd1992cf0
+
+Device     Boot   Start     End Sectors  Size Id Type
+/dev/sdb1          2048 3907583 3905536  1.9G 83 Linux
+/dev/sdb2       3907584 5242879 1335296  652M 83 Linux
+
+5. vagrant@vagrant:~$ sudo sfdisk -d /dev/sdb | sudo sfdisk --force /dev/sdc
+
+6-7.
+root@vagrant:~# mdadm --detail --scan >> /etc/mdadm/mdadm.conf 
+root@vagrant:~# cat /etc/mdadm/mdadm.conf 
+DEVICE partitions containers
+ARRAY /dev/md0 metadata=1.2 name=vagrant:0 UUID=33b10ccb:572f8640:e0757760:16d18103
+ARRAY /dev/md1 metadata=1.2 name=vagrant:1 UUID=58c15802:5e12acb8:8f357742:f77b3929
+
+vagrant@vagrant:~$ cat /proc/mdstat 
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md1 : active raid0 sdc2[1] sdb2[0]
+      1331200 blocks super 1.2 512k chunks
+      
+md0 : active raid1 sdc1[1] sdb1[0]
+      1950720 blocks super 1.2 [2/2] [UU]
+      
+unused devices: <none>
+
+8. vagrant@vagrant:~$ sudo pvs
+  PV         VG        Fmt  Attr PSize   PFree 
+  /dev/md0             lvm2 ---    1.86g  1.86g
+  /dev/md1             lvm2 ---   <1.27g <1.27g
+  /dev/sda5  vgvagrant lvm2 a--  <63.50g     0 
+
+9. vagrant@vagrant:~$ sudo vgcreate vg-netology /dev/md0 /dev/md1
+  Volume group "vg-netology" successfully created
+
+vagrant@vagrant:~$ sudo vgs
+  VG          #PV #LV #SN Attr   VSize   VFree
+  vg-netology   2   0   0 wz--n-   3.12g 3.12g
+  vgvagrant     1   2   0 wz--n- <63.50g    0 
+
+10. root@vagrant:~# lvcreate -n lv-100 -L100M /dev/vg-netology /dev/md1
+11. root@vagrant:~# mkfs.ext4 /dev/mapper/vg--netology-lv--100
+12. root@vagrant:~# mount /dev/mapper/vg--netology-lv--100 /tmp/new
+13. wget https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz
+    root@vagrant:~# ls -lah /tmp/new
+total 20M
+drwxr-xr-x  3 root root 4.0K Apr 15 10:04 .
+drwxrwxrwt 11 root root 4.0K Apr 15 10:03 ..
+drwx------  2 root root  16K Apr 15 10:01 lost+found
+-rw-r--r--  1 root root  20M Apr 15 07:54 test.gz
+
+14.root@vagrant:~# lsblk
+NAME                       MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+sda                          8:0    0   64G  0 disk  
+├─sda1                       8:1    0  512M  0 part  /boot/efi
+├─sda2                       8:2    0    1K  0 part  
+└─sda5                       8:5    0 63.5G  0 part  
+  ├─vgvagrant-root         253:0    0 62.6G  0 lvm   /
+  └─vgvagrant-swap_1       253:1    0  980M  0 lvm   [SWAP]
+sdb                          8:16   0  2.5G  0 disk  
+├─sdb1                       8:17   0  1.9G  0 part  
+│ └─md0                      9:0    0  1.9G  0 raid1 
+└─sdb2                       8:18   0  652M  0 part  
+  └─md1                      9:1    0  1.3G  0 raid0 
+    └─vg--netology-lv--100 253:2    0  100M  0 lvm   /tmp/new
+sdc                          8:32   0  2.5G  0 disk  
+├─sdc1                       8:33   0  1.9G  0 part  
+│ └─md0                      9:0    0  1.9G  0 raid1 
+└─sdc2                       8:34   0  652M  0 part  
+  └─md1                      9:1    0  1.3G  0 raid0 
+    └─vg--netology-lv--100 253:2    0  100M  0 lvm   /tmp/new
+
+15. root@vagrant:~# gzip -t /tmp/new/test.gz 
+root@vagrant:~# echo $?
+0
+
+16. root@vagrant:~# pvmove /dev/md1 /dev/md0 
+  /dev/md1: Moved: 16.00%
+  /dev/md1: Moved: 100.00%
+
+root@vagrant:~# lsblk
+NAME                       MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+sda                          8:0    0   64G  0 disk  
+├─sda1                       8:1    0  512M  0 part  /boot/efi
+├─sda2                       8:2    0    1K  0 part  
+└─sda5                       8:5    0 63.5G  0 part  
+  ├─vgvagrant-root         253:0    0 62.6G  0 lvm   /
+  └─vgvagrant-swap_1       253:1    0  980M  0 lvm   [SWAP]
+sdb                          8:16   0  2.5G  0 disk  
+├─sdb1                       8:17   0  1.9G  0 part  
+│ └─md0                      9:0    0  1.9G  0 raid1 
+│   └─vg--netology-lv--100 253:2    0  100M  0 lvm   /tmp/new
+└─sdb2                       8:18   0  652M  0 part  
+  └─md1                      9:1    0  1.3G  0 raid0 
+sdc                          8:32   0  2.5G  0 disk  
+├─sdc1                       8:33   0  1.9G  0 part  
+│ └─md0                      9:0    0  1.9G  0 raid1 
+│   └─vg--netology-lv--100 253:2    0  100M  0 lvm   /tmp/new
+└─sdc2                       8:34   0  652M  0 part  
+  └─md1                      9:1    0  1.3G  0 raid0
+
+17.root@vagrant:~# mdadm --fail /dev/md0 /dev/sdc1
+mdadm: set /dev/sdc1 faulty in /dev/md0
+
+18. root@vagrant:~# dmesg | grep "Disk fai" -A 3
+[28935.735372] md/raid1:md0: Disk failure on sdc1, disabling device.
+               md/raid1:md0: Operation continuing on 1 devices.
+
+19. root@vagrant:~# gzip -t /tmp/new/test.gz 
+root@vagrant:~# echo $?
+0
