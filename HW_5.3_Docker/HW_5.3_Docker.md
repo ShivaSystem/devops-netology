@@ -55,7 +55,7 @@ $ sudo docker exec -it apache /bin/bash
 # docker commit -m "httpd image for Netology" -a "Vladimir Sakhnov" 0a94c845e9b8 httpd:latestnew
 # docker tag 0a94c845e9b8 shiva2913/httpd:latestnew
 # docker login
-# docker push shiva2913/httpd:latestnew
+# docker push shiva2913/nginx:latestnew
 ```
 
 ### Ссылка на DockerHub
